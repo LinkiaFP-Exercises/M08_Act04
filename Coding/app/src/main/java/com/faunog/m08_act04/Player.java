@@ -9,19 +9,18 @@ public class Player {
     private float x;
     private final float y;
     private final int size;
-    private Bitmap playerBitmap;
+    private Bitmap bitmap;
     private final GameLogic gameLogic;
 
-    public Player(int screenWidth, int screenHeight, Resources resources, GameLogic gameLogic) {
+    public Player(GameLogic gameLogic, Resources resources) {
         this.gameLogic = gameLogic;
-        size = screenWidth / 10;
-        x = (screenWidth - size) / 2f;
-        y = screenHeight - size;
+        size = gameLogic.getScreenWidth() / 10;
+        x = (gameLogic.getScreenWidth() - size) / 2f;
+        y = gameLogic.getScreenHeight() - size;
 
-        playerBitmap = BitmapFactory.decodeResource(resources, R.drawable.space_ship);
-        playerBitmap = Bitmap.createScaledBitmap(playerBitmap, size, size, true);
-        playerBitmap = Bitmap.createBitmap(playerBitmap, 0, 0, size, size);
-
+        bitmap = BitmapFactory.decodeResource(resources, R.drawable.space_ship);
+        bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, size, size);
     }
 
     public float getX() {
@@ -37,8 +36,8 @@ public class Player {
         return y;
     }
 
-    public Bitmap getPlayerBitmap() {
-        return playerBitmap;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
     public int getSize() {

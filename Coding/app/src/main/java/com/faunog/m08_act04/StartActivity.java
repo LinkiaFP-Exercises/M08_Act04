@@ -35,6 +35,7 @@ public class StartActivity extends AppCompatActivity {
             intent.putExtra("playerName", playerName);
             intent.putExtra("selectedLevel", selectedLevel);
             startActivity(intent);
+            finish();
         });
     }
 }

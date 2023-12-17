@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -16,13 +14,11 @@ public class GameView extends SurfaceView implements Runnable {
     private final SurfaceHolder surfaceHolder;
     private Thread gameThread;
     private boolean isPlaying;
-    private final Paint paint;
     private GameLogic gameLogic;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         surfaceHolder = getHolder();
-        paint = new Paint();
     }
 
     @Override
@@ -37,10 +33,11 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     private void startGameLogic() {
-        gameLogic = new GameLogic(getWidth(), getHeight(), getResources());
+        gameLogic = new GameLogic(getWidth(), getHeight(), getResources(), getContext());
     }
 
     private void update() {
+        gameLogic.update();
     }
 
     private void draw() {
@@ -49,17 +46,28 @@ public class GameView extends SurfaceView implements Runnable {
 
             canvas.drawColor(Color.BLACK);
 
-            canvas.drawBitmap(gameLogic.getPlayer().getPlayerBitmap(), gameLogic.getPlayer().getX(), gameLogic.getPlayer().getY(), null);
+            canvas.drawBitmap(gameLogic.getPlayer().getBitmap(),
+                    gameLogic.getPlayer().getX(), gameLogic.getPlayer().getY(), null);
+
+            for (Obstacle obstacle : gameLogic.getObstacles()) {
+                canvas.drawBitmap(obstacle.getBitmap(),
+                        obstacle.getX(), obstacle.getY(), null);
+            }
 
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 
+    /**
+     * @noinspection BusyWait
+     */
     private void control() {
         // Controla la velocidad de actualización del juego (fps)
         try {
-            do {Thread.sleep(16);} while (!surfaceHolder.getSurface().isValid());
-             // Aproximadamente 60 fps
+            do {
+                Thread.sleep(16);
+            } while (!surfaceHolder.getSurface().isValid());
+            // Aproximadamente 60 fps
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
