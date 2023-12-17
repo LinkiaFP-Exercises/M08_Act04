@@ -4,22 +4,35 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.Random;
+
 public class Obstacle {
 
     private float x, y; // Posición del obstáculo
     private int speed; // Velocidad del obstáculo
     private final int size;
+    private final String level;
     private Bitmap bitmap;
     private final GameLogic gameLogic;
 
-    public Obstacle(GameLogic gameLogic, Resources resources) {
+    public Obstacle(GameLogic gameLogic, Resources resources, String level) {
         this.gameLogic = gameLogic;
         size = gameLogic.getScreenWidth() / 20;
         x = getRandomXPosition();
         y = -size;
         speed = 5;
+        this.level = level;
+        setBitmap(resources);
+    }
 
-        bitmap = BitmapFactory.decodeResource(resources, R.drawable.enemy);
+    private void setBitmap(Resources resources) {
+        if (level.equalsIgnoreCase("Hard")) {
+            int backgroundResource = new Random().nextBoolean()
+                    ? R.drawable.enemy : R.drawable.obstaculo;
+            bitmap = BitmapFactory.decodeResource(resources, backgroundResource);
+        } else {
+            bitmap = BitmapFactory.decodeResource(resources, R.drawable.enemy);
+        }
         bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, size, size);
     }
@@ -29,15 +42,12 @@ public class Obstacle {
     }
 
     public boolean updateSendTrueIfRestart() {
-        // Actualizar la posición en función de la velocidad
         y += speed;
 
-        // Verificar si el obstáculo ha cruzado la pantalla
         if (y > gameLogic.getScreenHeight()) {
-            // Reiniciar en la parte superior y aumentar la velocidad
             x = getRandomXPosition();
             y = -size;
-            speed += 1; // Puedes ajustar la cantidad en la que aumenta la velocidad
+            speed += level.equalsIgnoreCase("Hard") ? 2 : 1;
             return true;
         }
         return false;

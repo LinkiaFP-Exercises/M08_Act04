@@ -3,5 +3,10 @@
     <string name="player_name">Player Name</string>
     <string name="easy">Easy</string>
     <string name="hard">Hard</string>
-    <string name="start">Start</string>
+    <string name="start">START</string>
+    <string name="restart">RESTART</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="nombre_del_jugador">Jugador Anonimo</string>
+    <string name="puntuaci_n_100">100 Puntos</string>
+    <string name="score">SCORE</string>
 </resources>

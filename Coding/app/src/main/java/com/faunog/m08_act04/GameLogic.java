@@ -19,6 +19,7 @@ public class GameLogic {
     private final Context context;
     private long lastObstacleTime;
     private int score;
+    private final String playerName, level;
 
     public GameLogic(int screenWidth, int screenHeight, Resources resources, Context context) {
         this.screenWidth = screenWidth;
@@ -26,29 +27,37 @@ public class GameLogic {
         this.resources = resources;
         this.context = context;
         player = new Player(this, resources);
+        this.playerName = ((GameActivity) context).getPlayerNameTextView().getText().toString();
+        this.level = ((GameActivity) context).getLevelTextView().getText().toString();
         obstacles = new ArrayList<>();
         score = 0;
     }
 
     public void update() {
-        if (obstacles.size() < 20) {
+        int numberOfObstacles = level.equalsIgnoreCase("Hard") ? 30 : 15;
+        if (obstacles.size() < numberOfObstacles) {
             long currentTime = System.currentTimeMillis();
 
-            long obstacleCreationInterval = 2000;
+            long obstacleCreationInterval = level.equalsIgnoreCase("Hard") ? 1500 : 2000;
             if (currentTime - lastObstacleTime > obstacleCreationInterval) {
-                obstacles.add(new Obstacle(this, resources));
+                obstacles.add(new Obstacle(this, resources, level));
                 lastObstacleTime = currentTime;
             }
         }
 
         for (Obstacle obstacle : obstacles) {
             if (obstacle.updateSendTrueIfRestart()) {
-                score++;
-                Log.d("SCORE", String.valueOf(getScore()));
+                increaseScore();
+                Log.d("SCORE", String.valueOf(score));
             }
         }
 
         checkCollisions();
+    }
+
+    private void increaseScore() {
+        score++;
+        ((GameActivity) context).updateScoreTextViewOnUiThread(score);
     }
 
     private void checkCollisions() {
@@ -97,11 +106,13 @@ public class GameLogic {
     private void handleCollision() {
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, OverActivity.class);
+        intent.putExtra("PLAYER_NAME", playerName);
+        intent.putExtra("SCORE", score);
         context.startActivity(intent);
         currentActivity.finish();
     }
 
-    public void onTouchEvent(MotionEvent event) {
+    public void onPlayerTouchEvent(MotionEvent event) {
         if (player != null) {
             float touchX = event.getX();
             float touchY = event.getY();
@@ -111,10 +122,6 @@ public class GameLogic {
                 player.setX(event.getX());
             }
         }
-    }
-
-    public int getScore() {
-        return score;
     }
 
     public Player getPlayer() {

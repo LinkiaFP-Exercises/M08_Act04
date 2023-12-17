@@ -2,6 +2,8 @@ package com.faunog.m08_act04;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -15,6 +17,7 @@ public class GameView extends SurfaceView implements Runnable {
     private Thread gameThread;
     private boolean isPlaying;
     private GameLogic gameLogic;
+    private Bitmap backgroundBitmap;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -34,6 +37,28 @@ public class GameView extends SurfaceView implements Runnable {
 
     private void startGameLogic() {
         gameLogic = new GameLogic(getWidth(), getHeight(), getResources(), getContext());
+        initializeBackground();
+    }
+
+    private void initializeBackground() {
+        String level = ((GameActivity) getContext()).getLevelTextView().getText().toString();
+        int backgroundResource = level.equalsIgnoreCase("Hard")
+                ? R.drawable.background_level_hardy : R.drawable.background_level_easy;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), backgroundResource, options);
+
+        float aspectRatio = (float) originalBackground.getWidth() / (float) originalBackground.getHeight();
+        int proportionalHeight = Math.round(getWidth() / aspectRatio);
+
+        if (proportionalHeight < getHeight()) {
+            proportionalHeight = getHeight();
+            int proportionalWidth = Math.round(getHeight() * aspectRatio);
+            backgroundBitmap = Bitmap.createScaledBitmap(originalBackground, proportionalWidth, proportionalHeight, true);
+        } else {
+            backgroundBitmap = originalBackground;
+        }
     }
 
     private void update() {
@@ -45,6 +70,7 @@ public class GameView extends SurfaceView implements Runnable {
             Canvas canvas = surfaceHolder.lockCanvas();
 
             canvas.drawColor(Color.BLACK);
+            canvas.drawBitmap(backgroundBitmap, 0, 0, null);
 
             canvas.drawBitmap(gameLogic.getPlayer().getBitmap(),
                     gameLogic.getPlayer().getX(), gameLogic.getPlayer().getY(), null);
@@ -92,8 +118,10 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (gameLogic != null) {
-            gameLogic.onTouchEvent(event);
+            gameLogic.onPlayerTouchEvent(event);
         }
         return true; // Indica que el evento táctil ha sido manejado
     }
+
+
 }

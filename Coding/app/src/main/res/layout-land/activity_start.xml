@@ -1,44 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:background="@android:color/black"
     tools:ignore="MissingDefaultResource">
 
-    <EditText
-        android:id="@+id/editTextPlayerName"
+    <ImageView
+        android:id="@+id/imageViewBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/player_name"
-        android:minHeight="48dp"
-        android:autofillHints="Player Name"
-        android:inputType="text" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/start_background" />
 
-    <RadioGroup
-        android:id="@+id/radioGroupLevels"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/radioButtonEasy"
+        <EditText
+            android:id="@+id/editTextPlayerName"
+            android:layout_width="269dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:autofillHints="Player Name"
+            android:background="@android:color/transparent"
+            android:hint="@string/player_name"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupLevels"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/easy" />
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/radioButtonHard"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/radioButtonEasy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/easy"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/radioButtonHard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hard"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/buttonStart"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="98dp"
             android:layout_height="wrap_content"
-            android:text="@string/hard" />
-    </RadioGroup>
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="@string/start"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/buttonStart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start" />
-</LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
