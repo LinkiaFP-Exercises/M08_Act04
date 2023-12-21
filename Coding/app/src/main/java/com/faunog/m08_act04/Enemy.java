@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 
 import java.util.Random;
 
-public class Obstacle {
+public class Enemy {
 
     private float x, y; // Posición del obstáculo
     private int speed; // Velocidad del obstáculo
@@ -15,7 +15,7 @@ public class Obstacle {
     private Bitmap bitmap;
     private final GameLogic gameLogic;
 
-    public Obstacle(GameLogic gameLogic, Resources resources, String level) {
+    public Enemy(GameLogic gameLogic, Resources resources, String level) {
         this.gameLogic = gameLogic;
         size = gameLogic.getScreenWidth() / 20;
         x = getRandomXPosition();

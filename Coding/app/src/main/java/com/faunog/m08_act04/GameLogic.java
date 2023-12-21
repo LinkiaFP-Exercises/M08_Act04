@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GameLogic {
     private final Player player;
-    private final List<Obstacle> obstacles;
+    private final List<Enemy> enemies;
     private final int screenWidth, screenHeight;
     private final Resources resources;
     private final Context context;
@@ -29,26 +29,25 @@ public class GameLogic {
         player = new Player(this, resources);
         this.playerName = ((GameActivity) context).getPlayerNameTextView().getText().toString();
         this.level = ((GameActivity) context).getLevelTextView().getText().toString();
-        obstacles = new ArrayList<>();
+        enemies = new ArrayList<>();
         score = 0;
     }
 
     public void update() {
         int numberOfObstacles = level.equalsIgnoreCase("Hard") ? 30 : 15;
-        if (obstacles.size() < numberOfObstacles) {
+        if (enemies.size() < numberOfObstacles) {
             long currentTime = System.currentTimeMillis();
 
             long obstacleCreationInterval = level.equalsIgnoreCase("Hard") ? 1500 : 2000;
             if (currentTime - lastObstacleTime > obstacleCreationInterval) {
-                obstacles.add(new Obstacle(this, resources, level));
+                enemies.add(new Enemy(this, resources, level));
                 lastObstacleTime = currentTime;
             }
         }
 
-        for (Obstacle obstacle : obstacles) {
-            if (obstacle.updateSendTrueIfRestart()) {
+        for (Enemy enemy : enemies) {
+            if (enemy.updateSendTrueIfRestart()) {
                 increaseScore();
-                Log.d("SCORE", String.valueOf(score));
             }
         }
 
@@ -61,29 +60,36 @@ public class GameLogic {
     }
 
     private void checkCollisions() {
-        for (Obstacle obstacle : getObstacles()) {
-            if (isCollision(player, obstacle)) {
+        for (Enemy enemy : getEnemies()) {
+            if (isCollision(player, enemy)) {
                 handleCollision();
             }
         }
     }
 
-    private boolean isCollision(Player player, Obstacle obstacle) {
-        // Coordenadas del área de intersección
-        int xStart = (int) Math.max(player.getX(), obstacle.getX());
+    private boolean isCollision(Player player, Enemy enemy) {
+        // Porcentaje de reducción (ajustar según sea necesario)
+        float reductionPercentage = 0.15f;
+
+        // Calcular el margen basado en el tamaño de la imagen y el porcentaje de reducción
+        float reductionX = enemy.getSize() * reductionPercentage;
+        float reductionY = enemy.getSize() * reductionPercentage;
+
+        // Coordenadas del área de intersección con margen reducido
+        int xStart = (int) Math.max(player.getX(), enemy.getX() + reductionX);
         int xEnd = (int) Math.min(player.getX() + player.getSize(),
-                obstacle.getX() + obstacle.getSize());
-        int yStart = (int) Math.max(player.getY(), obstacle.getY());
+                enemy.getX() + enemy.getSize() - reductionX);
+        int yStart = (int) Math.max(player.getY(), enemy.getY() + reductionY);
         int yEnd = (int) Math.min(player.getY() + player.getSize(),
-                obstacle.getY() + obstacle.getSize());
+                enemy.getY() + enemy.getSize() - reductionY);
 
         // Verificar la colisión píxel por píxel en el área de intersección
         for (int x = xStart; x < xEnd; x++) {
             for (int y = yStart; y < yEnd; y++) {
                 int playerPixel = getPixel(player.getBitmap(),
                         x - (int) player.getX(), y - (int) player.getY());
-                int obstaclePixel = getPixel(obstacle.getBitmap(),
-                        x - (int) obstacle.getX(), y - (int) obstacle.getY());
+                int obstaclePixel = getPixel(enemy.getBitmap(),
+                        x - (int) enemy.getX(), y - (int) enemy.getY());
 
                 // Si ambos píxeles no son transparentes, hay colisión
                 if ((playerPixel >> 24) != 0 && (obstaclePixel >> 24) != 0) {
@@ -128,8 +134,8 @@ public class GameLogic {
         return player;
     }
 
-    public List<Obstacle> getObstacles() {
-        return obstacles;
+    public List<Enemy> getEnemies() {
+        return enemies;
     }
 
     public int getScreenWidth() {

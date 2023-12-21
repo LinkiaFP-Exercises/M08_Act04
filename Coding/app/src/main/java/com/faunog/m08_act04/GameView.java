@@ -75,9 +75,9 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(gameLogic.getPlayer().getBitmap(),
                     gameLogic.getPlayer().getX(), gameLogic.getPlayer().getY(), null);
 
-            for (Obstacle obstacle : gameLogic.getObstacles()) {
-                canvas.drawBitmap(obstacle.getBitmap(),
-                        obstacle.getX(), obstacle.getY(), null);
+            for (Enemy enemy : gameLogic.getEnemies()) {
+                canvas.drawBitmap(enemy.getBitmap(),
+                        enemy.getX(), enemy.getY(), null);
             }
 
             surfaceHolder.unlockCanvasAndPost(canvas);

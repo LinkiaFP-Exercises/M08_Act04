@@ -27,7 +27,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/player_name"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/levelTextView"
@@ -36,7 +37,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/easy"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/scoreTextView"
@@ -45,7 +47,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/score"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 
 </RelativeLayout>
