@@ -5,11 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Enemy {
 
-    private float x, y; // Posición del obstáculo
-    private int speed; // Velocidad del obstáculo
+    private float x, y;
+    private int speed;
     private final int size;
     private final String level;
     private Bitmap bitmap;
@@ -26,19 +27,16 @@ public class Enemy {
     }
 
     private void setBitmap(Resources resources) {
-        if (level.equalsIgnoreCase("Hard")) {
-            int backgroundResource = new Random().nextBoolean()
-                    ? R.drawable.enemy : R.drawable.obstaculo;
-            bitmap = BitmapFactory.decodeResource(resources, backgroundResource);
-        } else {
-            bitmap = BitmapFactory.decodeResource(resources, R.drawable.enemy);
-        }
+        int backgroundResource = (level.equalsIgnoreCase("Hard")
+                && ThreadLocalRandom.current().nextBoolean())
+                ? R.drawable.obstaculo : R.drawable.enemy;
+        bitmap = BitmapFactory.decodeResource(resources, backgroundResource);
         bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
         bitmap = Bitmap.createBitmap(bitmap, 0, 0, size, size);
     }
 
     private float getRandomXPosition() {
-        return (float) (Math.random() * (gameLogic.getScreenWidth() - size));
+        return (float) (ThreadLocalRandom.current().nextDouble() * (gameLogic.getScreenWidth() - size));
     }
 
     public boolean updateSendTrueIfRestart() {
