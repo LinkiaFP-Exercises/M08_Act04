@@ -5,12 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase que gestiona la lógica del juego, incluyendo la interacción entre el jugador y los enemigos.
+ *
+ * @author <a href="https://about.me/prof.guazina">Fauno Guazina</a>
+ * @version 1.0
+ * @since 23/12/2023
+ */
 public class GameLogic {
     private final Player player;
     private final List<Enemy> enemies;
@@ -21,6 +27,14 @@ public class GameLogic {
     private int score;
     private final String playerName, level;
 
+    /**
+     * Constructor de la clase GameLogic.
+     *
+     * @param screenWidth  Ancho de la pantalla del dispositivo.
+     * @param screenHeight Altura de la pantalla del dispositivo.
+     * @param resources    Recursos de la aplicación.
+     * @param context      Contexto de la aplicación.
+     */
     public GameLogic(int screenWidth, int screenHeight, Resources resources, Context context) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -33,6 +47,9 @@ public class GameLogic {
         score = 0;
     }
 
+    /**
+     * Actualiza la lógica del juego, incluyendo la creación de enemigos, el aumento de puntaje y la verificación de colisiones.
+     */
     public void update() {
         int numberOfObstacles = level.equalsIgnoreCase("Hard") ? 30 : 15;
         if (enemies.size() < numberOfObstacles) {
@@ -54,11 +71,17 @@ public class GameLogic {
         checkCollisions();
     }
 
+    /**
+     * Aumenta el puntaje y actualiza la interfaz de usuario en consecuencia.
+     */
     private void increaseScore() {
         score++;
         ((GameActivity) context).updateScoreTextViewOnUiThread(score);
     }
 
+    /**
+     * Verifica las colisiones entre el jugador y los enemigos, manejando la lógica del juego en caso de colisión.
+     */
     private void checkCollisions() {
         for (Enemy enemy : getEnemies()) {
             if (isCollision(player, enemy)) {
@@ -67,6 +90,13 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Verifica si hay colisión entre el jugador y un enemigo mediante la detección de píxeles.
+     *
+     * @param player Jugador.
+     * @param enemy  Enemigo.
+     * @return Verdadero si hay colisión, falso en caso contrario.
+     */
     private boolean isCollision(Player player, Enemy enemy) {
         // Porcentaje de reducción (ajustar según sea necesario)
         float reductionPercentage = 0.15f;
@@ -101,6 +131,14 @@ public class GameLogic {
         return false;
     }
 
+    /**
+     * Obtiene el valor del píxel en las coordenadas especificadas de una imagen.
+     *
+     * @param bitmap Imagen.
+     * @param x      Coordenada X.
+     * @param y      Coordenada Y.
+     * @return Valor del píxel.
+     */
     private int getPixel(Bitmap bitmap, int x, int y) {
         if (x >= 0 && x < bitmap.getWidth() && y >= 0 && y < bitmap.getHeight()) {
             return bitmap.getPixel(x, y);
@@ -109,6 +147,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Maneja las acciones a realizar en caso de colisión entre el jugador y un enemigo.
+     */
     private void handleCollision() {
         Activity currentActivity = (Activity) context;
         Intent intent = new Intent(context, OverActivity.class);
@@ -118,6 +159,11 @@ public class GameLogic {
         currentActivity.finish();
     }
 
+    /**
+     * Maneja el evento de toque en la pantalla para mover al jugador.
+     *
+     * @param event Evento de toque.
+     */
     public void onPlayerTouchEvent(MotionEvent event) {
         if (player != null) {
             float touchX = event.getX();
@@ -130,18 +176,38 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Obtiene la instancia del jugador.
+     *
+     * @return Instancia del jugador.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Obtiene la lista de enemigos.
+     *
+     * @return Lista de enemigos.
+     */
     public List<Enemy> getEnemies() {
         return enemies;
     }
 
+    /**
+     * Obtiene el ancho de la pantalla.
+     *
+     * @return Ancho de la pantalla.
+     */
     public int getScreenWidth() {
         return screenWidth;
     }
 
+    /**
+     * Obtiene la altura de la pantalla.
+     *
+     * @return Altura de la pantalla.
+     */
     public int getScreenHeight() {
         return screenHeight;
     }

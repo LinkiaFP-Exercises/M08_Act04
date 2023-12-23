@@ -11,6 +11,13 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * Vista del juego que maneja la representación gráfica y la interacción táctil del jugador.
+ *
+ * @author <a href="https://about.me/prof.guazina">Fauno Guazina</a>
+ * @version 1.0
+ * @since 23/12/2023
+ */
 public class GameView extends SurfaceView implements Runnable {
 
     private final SurfaceHolder surfaceHolder;
@@ -19,11 +26,20 @@ public class GameView extends SurfaceView implements Runnable {
     private GameLogic gameLogic;
     private Bitmap backgroundBitmap;
 
+    /**
+     * Constructor de la clase GameView.
+     *
+     * @param context Contexto de la aplicación.
+     * @param attrs   Atributos de la interfaz de usuario.
+     */
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         surfaceHolder = getHolder();
     }
 
+    /**
+     * Método principal del hilo de ejecución del juego.
+     */
     @Override
     public void run() {
         control(); // Espera que el surface esté creado
@@ -35,11 +51,17 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * Inicia la lógica del juego y configura el fondo.
+     */
     private void startGameLogic() {
         gameLogic = new GameLogic(getWidth(), getHeight(), getResources(), getContext());
         initializeBackground();
     }
 
+    /**
+     * Inicializa el fondo del juego según el nivel.
+     */
     private void initializeBackground() {
         String level = ((GameActivity) getContext()).getLevelTextView().getText().toString();
         int backgroundResource = level.equalsIgnoreCase("Hard")
@@ -61,10 +83,16 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * Actualiza la lógica del juego.
+     */
     private void update() {
         gameLogic.update();
     }
 
+    /**
+     * Dibuja los elementos del juego en el lienzo.
+     */
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
             Canvas canvas = surfaceHolder.lockCanvas();
@@ -85,6 +113,8 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
     /**
+     * Controla la velocidad de actualización del juego.
+     *
      * @noinspection BusyWait
      */
     private void control() {
@@ -99,6 +129,9 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * Pausa la ejecución del juego.
+     */
     public void pause() {
         isPlaying = false;
         try {
@@ -108,12 +141,21 @@ public class GameView extends SurfaceView implements Runnable {
         }
     }
 
+    /**
+     * Reanuda la ejecución del juego.
+     */
     public void resume() {
         isPlaying = true;
         gameThread = new Thread(this);
         gameThread.start();
     }
 
+    /**
+     * Maneja los eventos táctiles del jugador.
+     *
+     * @param event Evento táctil.
+     * @return Verdadero si el evento táctil ha sido manejado, falso en caso contrario.
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -122,6 +164,4 @@ public class GameView extends SurfaceView implements Runnable {
         }
         return true; // Indica que el evento táctil ha sido manejado
     }
-
-
 }
